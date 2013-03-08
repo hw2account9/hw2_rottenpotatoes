@@ -1,12 +1,15 @@
 -#  This file is app/views/movies/index.html.haml
 %h1 All Movies
-
+/ * March 6 1.b */
+/ * Added sorting and div ids for title_header and release_date_header*/
 %table#movies
   %thead
     %tr
-      %th Movie Title
+      %th{:id => "title_header", :class => @titleclass}= link_to "Movie Title", sort: "title"
+      =puts @titleclass
+      =puts "HUHUHUHUHUHU"
       %th Rating
-      %th Release Date
+      %th{:id =>"release_date_header", :class => @dateclass}=link_to "Release Date", sort: "release_date"
       %th More Info
   %tbody
     - @movies.each do |movie|

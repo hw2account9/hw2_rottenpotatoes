@@ -59,3 +59,9 @@ form label {
   font-weight: bold;
   color: maroon;
 }
+/*March 6 1.b*/
+table#movies th.hilite {
+  background-color: yellow;
+}
+/*------------*/
+
