@@ -7,13 +7,17 @@ class MoviesController < ApplicationController
 # March 6 hw2 1.b
 
   def index
-
+    puts "SESSION RATING"
+    puts session[:ratings]
     @all_ratings=Movie.all_ratings
-      bad_uri = false
+    @all_ratings_h={}
+    @all_ratings.each { |e| @all_ratings_h[e]='on' }
+    bad_uri = false
 
 # March 8 hw2 3
-    if session[:sort] == nil then session[:sort] = 'title' end
-    
+    if session[:sort] == nil || {} then session[:sort] = 'title' end
+    if session[:ratings] == nil || session[:ratings].empty? then session[:ratings] = @all_ratings_h end
+
     if params[:sort] == nil
      params[:sort] = session[:sort]
      bad_uri = true
@@ -22,26 +26,22 @@ class MoviesController < ApplicationController
     end
 
 
-    @ratings = params[:ratings] || {}
-
-    if session[:ratings] == nil 
-      session[:ratings] ={}
-      @all_ratings.each { |e| session[:ratings]='on' }
-    end
-
-    if @ratings == {}
-     @ratings = session[:ratings] 
-     bad_uri = true
+    if params[:ratings] == nil || params[:ratings].empty?
+      bad_uri = true
+      @ratings = session[:ratings] 
+      session[:ratings] 
     else
-     session[:ratings] = params[:ratings] 
-    end
+      @ratings =params[:ratings] 
+      session[:ratings] = params[:ratings] 
 
+    end
 
     # if @ratings != nil
     #   movies = []
     #   @movies.each { |movie| if (@ratings[movie.rating]) then movies.push(movie) end }
     #   @movies = movies
     # end
+
 
     @movies = (Movie.where(:rating => @ratings.keys))
     @movies = @movies.order(params[:sort])
@@ -57,7 +57,7 @@ class MoviesController < ApplicationController
     if bad_uri
       tmpsort =session[:sort]
       flash.keep
-      redirect_to ratings: session[:ratings], sort: tmpsort && return
+      redirect_to ratings: session[:ratings], sort: tmpsort
     end
     # @movies = Movie.all
   end
