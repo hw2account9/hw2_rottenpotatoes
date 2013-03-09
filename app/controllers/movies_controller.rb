@@ -7,7 +7,17 @@ class MoviesController < ApplicationController
   end
 # March 6 hw2 1.b
   def index
+    @all_ratings=Movie.all_ratings
     @movies = Movie.order(params[:sort])
+    @ratings=params[:ratings] || {}
+    @sort = params[:sort]
+
+    if @ratings != nil
+      movies = []
+      @movies.each { |movie| (@ratings[movie.rating]) ? movies.push(movie) : nil }
+      @movies = movies
+    end
+
     if params[:sort]=="title"
       @titleclass = "hilite"
       @dateclass = nil
@@ -20,6 +30,9 @@ class MoviesController < ApplicationController
     end
     # @movies = Movie.all
   end
+
+
+
 #-----------------
   def new
     # default: render 'new' template

@@ -1,13 +1,25 @@
 -#  This file is app/views/movies/index.html.haml
 %h1 All Movies
+-# March 8 hw2 2
+-# Added pastebin code, edited in div ids, and filtering
+= form_tag movies_path,id: 'ratings_form', :method => :get do
+  Include:
+  -if(@sort != nil)
+    %input{type: 'hidden', name: 'sort', value: @sort}
+  - @all_ratings.each do |rating|
+    = rating
+    = check_box_tag "ratings[#{rating}]", @ratings["#{rating}"], (@ratings == nil) ? true : @ratings["#{rating}"]
+  = submit_tag 'Refresh', id: 'ratings_submit'
+
+
 -# March 6 1.b
 -# Added sorting and div ids for title_header and release_date_header, and hilite css code
 %table#movies
   %thead
     %tr
-      %th{:id => "title_header", :class => @titleclass}= link_to "Movie Title", sort: "title"
+      %th{id: "title_header", :class => @titleclass}= link_to "Movie Title", sort: "title", ratings: @ratings
       %th Rating
-      %th{:id =>"release_date_header", :class => @dateclass}=link_to "Release Date", sort: "release_date"
+      %th{id: "release_date_header", :class => @dateclass}=link_to "Release Date", sort: "release_date", ratings: @ratings
       %th More Info
   %tbody
     - @movies.each do |movie|
