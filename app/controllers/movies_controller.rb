@@ -1,32 +1,63 @@
 class MoviesController < ApplicationController
-
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
 # March 6 hw2 1.b
-  def index
-    @all_ratings=Movie.all_ratings
-    @movies = Movie.order(params[:sort])
-    @ratings=params[:ratings] || {}
-    @sort = params[:sort]
 
-    if @ratings != nil
-      movies = []
-      @movies.each { |movie| (@ratings[movie.rating]) ? movies.push(movie) : nil }
-      @movies = movies
+  def index
+
+    @all_ratings=Movie.all_ratings
+      bad_uri = false
+
+# March 8 hw2 3
+    if session[:sort] == nil then session[:sort] = 'title' end
+    
+    if params[:sort] == nil
+     params[:sort] = session[:sort]
+     bad_uri = true
+    else 
+      session[:sort] = params[:sort] 
     end
+
+
+    @ratings = params[:ratings] || {}
+
+    if session[:ratings] == nil 
+      session[:ratings] ={}
+      @all_ratings.each { |e| session[:ratings]='on' }
+    end
+
+    if @ratings == {}
+     @ratings = session[:ratings] 
+     bad_uri = true
+    else
+     session[:ratings] = params[:ratings] 
+    end
+
+
+    # if @ratings != nil
+    #   movies = []
+    #   @movies.each { |movie| if (@ratings[movie.rating]) then movies.push(movie) end }
+    #   @movies = movies
+    # end
+
+    @movies = (Movie.where(:rating => @ratings.keys))
+    @movies = @movies.order(params[:sort])
+
 
     if params[:sort]=="title"
       @titleclass = "hilite"
       @dateclass = nil
-    elsif params[:sort]=="release_date"
-      @titleclass = nil
-      @dateclass = "hilite"
     else
       @titleclass = nil
-      @dateclass = nil
+      @dateclass = "hilite"
+    end
+    if bad_uri
+      tmpsort =session[:sort]
+      flash.keep
+      redirect_to ratings: session[:ratings], sort: tmpsort && return
     end
     # @movies = Movie.all
   end

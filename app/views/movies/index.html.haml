@@ -8,7 +8,7 @@
     %input{type: 'hidden', name: 'sort', value: @sort}
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", @ratings["#{rating}"], (@ratings == nil) ? true : @ratings["#{rating}"]
+    = check_box_tag "ratings[#{rating}]", @ratings["#{rating}"], @ratings["#{rating}"]
   = submit_tag 'Refresh', id: 'ratings_submit'
 
 
